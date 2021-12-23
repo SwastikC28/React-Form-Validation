@@ -4,30 +4,28 @@ const useInput = (validateValue) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [isTouched, setIsTouched] = useState(false);
 
-  const valueIsValid = validateValue(enteredValue);
+  const enteredValueIsValid = validateValue(enteredValue);
+  const enteredValueHasError = !enteredValueIsValid && isTouched;
 
-  const hasError = !valueIsValid && isTouched;
-
-  // console.log(valueIsValid);
+  console.log(enteredValueHasError);
 
   const valueChangeHandler = (event) => {
     setEnteredValue(event.target.value);
   };
-
-  const inputBlurHandler = (event) => {
+  const blurChangeHanlder = (event) => {
     setIsTouched(true);
   };
-
   const reset = () => {
     setEnteredValue("");
     setIsTouched(false);
   };
+
   return {
     value: enteredValue,
-    isValid: valueIsValid,
-    hasError,
+    isValid: enteredValueIsValid,
+    hasError: enteredValueHasError,
     valueChangeHandler,
-    inputBlurHandler,
+    blurChangeHanlder,
     reset,
   };
 };
