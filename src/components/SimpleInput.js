@@ -1,37 +1,36 @@
-import { useState, useEffect } from "react";
+import useInput from "./hooks/use-input";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
-  const [formisValid, setFormisValid] = useState(false);
+  const {
+    value: enteredName,
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: resetNameInput,
+  } = useInput((value) => value.trim() !== "");
 
-  const enteredNameisValid = enteredName.trim() !== "";
-  const nameInputisInvalid = !enteredNameisValid && enteredNameTouched;
+  let formisValid = false;
 
-  useEffect(() => {
-    if (enteredNameisValid) {
-      setFormisValid(true);
-    } else {
-      setFormisValid(false);
-    }
-  }, [enteredNameisValid]);
+  if (enteredNameIsValid) {
+    formisValid = true;
+    console.log(formisValid);
+  }
 
   const onChangeHandler = (e) => {
-    setEnteredName(e.target.value);
+    nameChangeHandler(e);
   };
 
   const submitFormHandler = (e) => {
     e.preventDefault();
-
-    setEnteredName("");
-    setEnteredNameTouched(false);
+    resetNameInput();
   };
 
   const blurInputHandler = (e) => {
-    setEnteredNameTouched(true);
+    nameBlurHandler(e);
   };
 
-  const nameInputClasses = nameInputisInvalid
+  const nameInputClasses = nameInputHasError
     ? "form-control invalid"
     : "form-control";
 
@@ -46,7 +45,7 @@ const SimpleInput = (props) => {
           onChange={onChangeHandler}
           onBlur={blurInputHandler}
         />
-        {nameInputisInvalid && (
+        {nameInputHasError && (
           <p className="error-text">Name must not be Empty</p>
         )}
       </div>
